@@ -3,8 +3,7 @@
 A terminal-first operating system layer for Bitburner. Everything runs in the terminal: no popups, no text boxes.
 
 ## Install
-1. Make a file called setup.js containing: 
-
+1. Make a file called install.js containing what is in update.js and run it
 2. Run `run setup.js`.
 3. Setup moves everything into `/home/kaze` and creates aliases.
 4. Type `boot`.
