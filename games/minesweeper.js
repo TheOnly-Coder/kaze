@@ -1,7 +1,7 @@
 /** @param {NS} ns */
 import { readLine, confirm } from "/home/kaze/lib/common.js";
 
-export async function main(ns) {
+async function play(ns) {
   const SIZE = 6, MINES = 6;
   // build
   const grid = Array.from({ length: SIZE }, () => Array(SIZE).fill(0));
@@ -45,12 +45,19 @@ export async function main(ns) {
   }
   while (true) {
     print();
-    const raw = await readLine(ns, "r c (reveal) or f c (flag) or quit:");
+    const raw = await readLine(ns, "Reveal 'r c', flag 'f r c', or 'quit':");
     const parts = String(raw).trim().split(/\s+/);
     if (parts[0] === "quit" || parts[0] === "q") break;
-    if (parts.length < 2) { ns.tprint("Usage: r 2 3  or  f 2 3"); continue; }
-    const mode = parts[0];
-    const r = parseInt(parts[1], 10), c = parseInt(parts[2], 10);
+    let mode = "r", r, c;
+    if (parts.length >= 3 && (parts[0] === "r" || parts[0] === "f")) {
+      mode = parts[0];
+      r = parseInt(parts[1], 10), c = parseInt(parts[2], 10);
+    } else if (parts.length >= 2) {
+      r = parseInt(parts[0], 10), c = parseInt(parts[1], 10);
+    } else {
+      ns.tprint("Usage: '2 3' to reveal, 'f 2 3' to flag");
+      continue;
+    }
     if (isNaN(r) || isNaN(c) || r < 0 || r >= SIZE || c < 0 || c >= SIZE) { ns.tprint("Bad coords."); continue; }
     if (mode === "f") { flagged[r][c] = !flagged[r][c]; continue; }
     if (flagged[r][c]) { ns.tprint("Flagged."); continue; }
@@ -67,7 +74,12 @@ export async function main(ns) {
     for (let rr = 0; rr < SIZE; rr++) for (let cc = 0; cc < SIZE; cc++) if (grid[rr][cc] !== -1 && !revealed[rr][cc]) remaining++;
     if (remaining === 0) { print(); ns.tprint("You win!"); break; }
   }
-  if (!(await confirm(ns, "Play again?"))) return;
-  // restart by re-running
-  ns.run(ns.getScriptName(), 1);
+}
+
+export async function main(ns) {
+  ns.tprint("=== Minesweeper (6x6, 6 mines) ===");
+  while (true) {
+    await play(ns);
+    if (!(await confirm(ns, "Play again?"))) break;
+  }
 }

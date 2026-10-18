@@ -7,19 +7,23 @@ export async function main(ns) {
     ns.tprint("Cancelled: invalid number.");
     return;
   }
+  let firstCost;
+  try { firstCost = ns.singularity.getUpgradeHomeRamCost(); }
+  catch (e) { ns.tprint("This script needs the Singularity API (Source-File 4 or BitNode-4)."); return; }
   const home = ns.getServer("home");
-  const mult = (ns.getBitNodeMultipliers() || {}).HomeComputerRamCost || 1;
   const MAX = 1073741824;
+  // Cost formula: ram * 32000 * 1.58^log2(ram) * mult. Each doubled upgrade
+  // multiplies the cost by exactly 2 * 1.58 (the live cost is re-checked below).
+  const GROWTH = 2 * 1.58;
   let ram = home.maxRam;
   let total = 0;
+  let cost = firstCost;
   const costs = [];
   for (let i = 0; i < n; i++) {
     if (ram >= MAX) break;
-    const numUpgrades = Math.log2(ram);
-    const m = Math.pow(1.58, numUpgrades);
-    const cost = ram * 32000 * m * mult;
     costs.push(cost);
     total += cost;
+    cost *= GROWTH;
     ram *= 2;
   }
   if (costs.length === 0) {
@@ -38,7 +42,8 @@ export async function main(ns) {
   }
   for (let i = 0; i < costs.length; i++) {
     const c = ns.singularity.getUpgradeHomeRamCost();
-    if (ns.getPlayer().money < c) {      ns.tprint("Not enough money for upgrade " + (i + 1) + ".");
+    if (ns.getPlayer().money < c) {
+      ns.tprint("Not enough money for upgrade " + (i + 1) + ".");
       return;
     }
     const ok = ns.singularity.upgradeHomeRam();

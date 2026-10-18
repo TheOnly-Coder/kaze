@@ -1,7 +1,7 @@
 /** @param {NS} ns */
 import { readLine, confirm } from "/home/kaze/lib/common.js";
 
-const WORDS = ["kaze", "crane", "slate", "trace", "crate", "audio", "raise", "arise", "irate", "stare", "store", "shore", "snare", "share", "spare", "spire", "spite", "spine", "spice", "slice", "slime", "slime".length === 5 ? "slime" : "slime"];
+const WORDS = ["kaze", "crane", "slate", "trace", "crate", "audio", "raise", "arise", "irate", "stare", "store", "shore", "snare", "share", "spare", "spire", "spite", "spine", "spice", "slice", "slime"];
 const FIVE = WORDS.filter((w) => w.length === 5);
 
 export async function main(ns) {

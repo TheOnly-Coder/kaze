@@ -1,11 +1,5 @@
 import { readLine } from "/home/kaze/lib/common.js";
 
-function printBoard(b) {
-  for (let i = 0; i < 9; i += 3) {
-    console.log? 0 : 0;
-  }
-}
-
 export async function main(ns) {
   ns.tprint("=== Tic-Tac-Toe (you=X, cpu=O) ===");
   let b = [" ", " ", " ", " ", " ", " ", " ", " ", " "];

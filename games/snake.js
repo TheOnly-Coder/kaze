@@ -8,10 +8,12 @@ export async function main(ns) {
   let food = { x: 8, y: 5 };
   let alive = true, score = 0;
   function placeFood() {
-    while (true) {
-      const x = Math.floor(Math.random() * W), y = Math.floor(Math.random() * H);
-      if (!snake.some((s) => s.x === x && s.y === y)) { food = { x, y }; return; }
+    const free = [];
+    for (let x = 0; x < W; x++) for (let y = 0; y < H; y++) {
+      if (!snake.some((s) => s.x === x && s.y === y)) free.push({ x, y });
     }
+    if (!free.length) return;
+    food = free[Math.floor(Math.random() * free.length)];
   }
   function draw() {
     const grid = Array.from({ length: H }, () => Array(W).fill(" "));
@@ -36,7 +38,11 @@ export async function main(ns) {
     if (head.x < 0 || head.x >= W || head.y < 0 || head.y >= H) { alive = false; break; }
     if (snake.some((s) => s.x === head.x && s.y === head.y)) { alive = false; break; }
     snake.unshift(head);
-    if (head.x === food.x && head.y === food.y) { score++; placeFood(); }
+    if (head.x === food.x && head.y === food.y) {
+      score++;
+      if (snake.length === W * H) { ns.tprint("You win! Board cleared."); break; }
+      placeFood();
+    }
     else snake.pop();
   }
   ns.tprint(`Game over. Score: ${score}`);

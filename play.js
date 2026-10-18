@@ -23,14 +23,18 @@ const GAMES = {
 
 export async function main(ns) {
   const destRoot = "/home/kaze";
-  let name = String(ns.args[0] || "").toLowerCase();
+  const listGames = () => ns.tprint("Available games: " + Object.keys(GAMES).join(", "));
+  let name = String(ns.args[0] || "").trim().toLowerCase();
   if (!name) {
-    ns.tprint("Available games: " + Object.keys(GAMES).filter((k, i, a) => a.indexOf(k) === i).join(", "));
-    name = String(await readLine(ns, "Which game?")).toLowerCase();
+    listGames();
+    name = String(await readLine(ns, "Which game?")).trim().toLowerCase();
+    if (name.startsWith("play ")) name = name.slice(5).trim();
   }
+  if (!name) { listGames(); return; }
   const file = GAMES[name];
   if (!file) {
     ns.tprint("Unknown game: " + name);
+    listGames();
     return;
   }
   const path = destRoot + "/games/" + file;

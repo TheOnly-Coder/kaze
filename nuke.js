@@ -14,6 +14,8 @@ export async function main(ns) {
   for (const p of ports) {
     try { if (ns.fileExists(p.fn, "home")) p.call(); } catch (e) {}
   }
-  try { ns.nuke(target); ns.tprint("Nuked " + target); }
-  catch (e) { ns.tprint("Failed to nuke " + target + ": " + e); }
+  try {
+    if (ns.nuke(target)) ns.tprint("Nuked " + target);
+    else ns.tprint("Failed to nuke " + target + " (not enough open ports or hacking level too low).");
+  } catch (e) { ns.tprint("Failed to nuke " + target + ": " + e); }
 }

@@ -1,10 +1,13 @@
 export async function main(ns) {
-  if (!ns.stock) { ns.tprint("Stock API unavailable (need SF8)."); return; }
-  const syms = ns.stock.getSymbols();
-  ns.tprint("=== Stocks ===");
+  let syms;
+  try { syms = ns.stock.getSymbols(); } catch (e) { ns.tprint("Stock API unavailable: " + e); return; }
+  const has4S = ns.stock.has4SDataTixApi();
+  ns.tprint("=== Stocks ===" + (has4S ? "" : " (no 4S data: forecast is n/a)"));
   for (const s of syms) {
-    const price = ns.stock.getPrice(s);
-    const forecast = ns.stock.getForecast(s);
-    ns.tprint(s + "  price:" + price.toFixed(2) + "  forecast:" + forecast.toFixed(3));
+    let price = "n/a";
+    let forecast = "n/a";
+    try { price = ns.stock.getPrice(s).toFixed(2); } catch (e) {}
+    if (has4S) { try { forecast = ns.stock.getForecast(s).toFixed(3); } catch (e) {} }
+    ns.tprint(s + "  price:" + price + "  forecast:" + forecast);
   }
 }

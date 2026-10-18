@@ -9,7 +9,10 @@ export async function main(ns) {
     if (String(betRaw).trim().toLowerCase() === "quit") break;
     const bet = parseInt(String(betRaw).trim(), 10);
     if (!bet || bet < 1 || bet > credits) { ns.tprint("Invalid bet."); continue; }
-    const choice = String(await readLine(ns, "heads or tails:")).trim().toLowerCase();
+    let choice = String(await readLine(ns, "heads or tails:")).trim().toLowerCase();
+    if (choice === "h") choice = "heads";
+    if (choice === "t") choice = "tails";
+    if (choice !== "heads" && choice !== "tails") { ns.tprint("Type heads or tails."); continue; }
     credits -= bet;
     const flip = Math.random() < 0.5 ? "heads" : "tails";
     ns.tprint(`Flip: ${flip}`);

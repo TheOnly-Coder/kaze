@@ -15,13 +15,12 @@ export async function main(ns) {
       const ports = ["BruteSSH.exe","FTPCrack.exe","relaySMTP.exe","HTTPWorm.exe","SQLInject.exe"];
       for (const p of ports) if (ns.fileExists(p, "home")) {
         if (p === "BruteSSH.exe") ns.brutessh(s);
-        if (p === "FTPCrack.exe") ns.ftpcrack(s);
-        if (p === "relaySMTP.exe") ns.relaysmtp(s);
-        if (p === "HTTPWorm.exe") ns.httpworm(s);
-        if (p === "SQLInject.exe") ns.sqlinject(s);
+        else if (p === "FTPCrack.exe") ns.ftpcrack(s);
+        else if (p === "relaySMTP.exe") ns.relaysmtp(s);
+        else if (p === "HTTPWorm.exe") ns.httpworm(s);
+        else ns.sqlinject(s);
       }
-      ns.nuke(s);
-      ns.tprint("Nuked " + s);
+      if (ns.nuke(s)) ns.tprint("Nuked " + s);
     } catch (e) {}
   }
   ns.tprint("Auto nuke complete.");

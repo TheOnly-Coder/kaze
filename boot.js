@@ -4,5 +4,5 @@ export async function main(ns) {
   await printLogo(ns);
   ns.tprint("");
   ns.tprint("Kaze OS booted.");
-  ns.tprint("Type 'kaze' for the dashboard, 'helpkaze' for commands.");
+  ns.tprint("Type 'kaze' for the dashboard, 'kazehelp' for commands.");
 }
