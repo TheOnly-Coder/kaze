@@ -9,7 +9,7 @@ A terminal-first operating system layer for Bitburner. Everything runs in the te
 4. Type `boot`.
 
 ## Aliases
-boot, setup, upgram, play, kazehelp, status, money, servers, hacknet, autohack, stock, gang, sleeve, blade, kazever, update, del, search, browse, fetch, read, page, web, browser
+boot, setup, upgram, play, kazehelp, status, money, servers, hacknet, autohack, stock, gang, sleeve, blade, kazever, update, del, search, browse, fetch, read, page, web, browser, free, apt, sudo, git, ls, cat, pwd, grep, ps, top, kill, clear
 
 ## Uploading a new version (kaze.sh)
 Run from the cloned folder on your computer (the sh script never runs in game):
