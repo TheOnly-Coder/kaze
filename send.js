@@ -1,4 +1,4 @@
-import { getBroadcastChannel, loadLinkState } from "/home/kaze/lib/link.js";
+import { genId, loadLinkState, topicForPort, ntfyPublish } from "/home/kaze/lib/link.js";
 
 export async function main(ns) {
   const message = ns.args.map((a) => String(a)).join(" ").trim();
@@ -11,15 +11,12 @@ export async function main(ns) {
     ns.tprint("send: not connected. Run 'connect [port]' or 'expose [port]' first.");
     return;
   }
-  const bc = getBroadcastChannel("kaze_link_" + state.port);
-  if (!bc) {
-    ns.tprint("send: BroadcastChannel unavailable in this environment.");
-    return;
-  }
-  try {
-    bc.postMessage({ type: "msg", to: state.peer, from: state.id, text: message });
-    ns.tprint("Sent.");
-  } catch (e) {
-    ns.tprint("send: failed to send message.");
-  }
+  const ok = await ntfyPublish(ns, topicForPort(state.port), {
+    type: "msg",
+    mid: genId(),
+    from: state.id,
+    to: state.peer,
+    text: message,
+  });
+  ns.tprint(ok ? "Sent." : "send: failed to publish message.");
 }
