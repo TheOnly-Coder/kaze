@@ -1,9 +1,12 @@
 import { genId, saveLinkState, topicForPort, ntfyPublish, ntfyPoll } from "/home/kaze/lib/link.js";
+import { loadPeerJS, parsePeerId } from "/home/kaze/lib/p2p.js";
 
 export async function main(ns) {
-  const port = parseInt(String(ns.args[0] || ""), 10);
-  if (!port || Number.isNaN(port)) {
-    ns.tprint("Usage: connect [port]");
+  const raw = String(ns.args[0] || "").trim();
+  const port = parseInt(raw, 10);
+  const isPort = raw && !Number.isNaN(port) && String(port) === raw && !raw.includes(":");
+  if (!isPort) {
+    await connectWeb(ns, raw);
     return;
   }
   const id = genId();
@@ -62,5 +65,45 @@ export async function main(ns) {
       try { ns.tprint(prints.shift()); } catch (e) {}
     }
     await ns.sleep(1500);
+  }
+}
+
+async function connectWeb(ns, input) {
+  const remoteId = parsePeerId(input);
+  if (!remoteId) {
+    ns.tprint("Usage: connect <url|peer-id>");
+    return;
+  }
+  const w = (function () { try { return eval("window"); } catch (e) { return null; } })();
+  const Peer = await loadPeerJS(ns);
+  if (!Peer) {
+    ns.tprint("connect web: could not load PeerJS library.");
+    return;
+  }
+  const prints = [];
+  const state = { role: "client", web: true, connected: false, peerId: null, remoteId, conn: null, prints };
+  try { if (w) w.__kazeP2P = state; } catch (e) {}
+
+  const peer = new Peer();
+  state.peer = peer;
+  peer.on("open", (id) => {
+    state.peerId = id;
+    const conn = peer.connect(remoteId);
+    state.conn = conn;
+    conn.on("open", () => {
+      state.connected = true;
+      prints.push("Connected to peer.");
+    });
+    conn.on("data", (data) => prints.push("[peer] " + String(data)));
+    conn.on("close", () => { state.connected = false; prints.push("Peer disconnected."); });
+  });
+  peer.on("error", (err) => prints.push("P2P error: " + String(err)));
+
+  ns.tprint("Connecting to peer " + remoteId + "...");
+  while (true) {
+    while (prints.length) {
+      try { ns.tprint(prints.shift()); } catch (e) {}
+    }
+    await ns.sleep(1000);
   }
 }

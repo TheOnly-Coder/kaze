@@ -6,9 +6,27 @@ export async function main(ns) {
     ns.tprint("Usage: send [message]");
     return;
   }
+
+  // Prefer active web P2P connection if present.
+  let p2p = null;
+  try { p2p = eval("window").__kazeP2P; } catch (e) { p2p = null; }
+  if (p2p && p2p.conn && p2p.connected) {
+    try {
+      p2p.conn.send(message);
+      ns.tprint("Sent.");
+      return;
+    } catch (e) {
+      ns.tprint("send: failed over P2P, trying port relay...");
+    }
+  }
+
   const state = loadLinkState();
   if (!state || !state.peer) {
-    ns.tprint("send: not connected. Run 'connect [port]' or 'expose [port]' first.");
+    ns.tprint("send: not connected. Run 'connect [port|url]' or 'expose [port|web]' first.");
+    return;
+  }
+  if (state.web) {
+    ns.tprint("send: web P2P connection not active.");
     return;
   }
   const ok = await ntfyPublish(ns, topicForPort(state.port), {
