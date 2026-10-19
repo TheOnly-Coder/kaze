@@ -5,5 +5,6 @@ export async function main(ns) {
   ns.tprint("update refreshes Kaze from the repo (only changed/new files). del force-deletes files or whole folders.");
   ns.tprint("Linux-style commands and aliases are available: ls, ll, cat, pwd, echo, touch, mkdir, rm, cp, mv, head, tail, wc, grep, find, ps, top, kill, killall, whoami, hostname, uname, date, clear, curl, wget, sort, uniq, cut, tr, free, mem, df, du, git, apt, sudo.");
   ns.tprint("Games: guess, rps, tictactoe, hangman, quiz, number, blackjack, slots, snake, wordle, higherlower, mathquiz, minesweeper, 2048, roulette, coinflip");
+  ns.tprint("Integrated Bitburner scripts: bb-daemon, bb-autopilot, sscan, facman, work, crime, ascend, hashes, do, hostman, stockmaster, stanek, etc.");
   ns.tprint("Launch a game with 'play <game>' or type its name directly (e.g. '2048').");
 }

@@ -86,10 +86,44 @@ export async function main(ns) {
     exit: "linux.js exit", logout: "linux.js exit", quit: "linux.js exit",
     reboot: "linux.js reboot", shutdown: "linux.js shutdown", poweroff: "linux.js shutdown",
   };
+
   for (const g of ["guess", "rps", "hangman", "blackjack", "slots", "ttt", "tictactoe", "2048", "g2048",
     "minesweeper", "snake", "wordle", "higherlower", "mathquiz", "roulette", "coinflip", "quiz", "number"]) {
     if (!(g in aliasMap)) aliasMap[g] = "play.js " + g;
   }
+
+  // Integrated Bitburner scripts (alainbryden/bitburner-scripts) aliases.
+  const bb = "bitburner-scripts";
+  const bbScripts = [
+    "autopilot", "daemon", "scan", "casino", "reserve", "faction-manager", "work-for-factions",
+    "crime", "ascend", "spend-hacknet-hashes", "farm-intelligence", "cleanup", "run-command",
+    "host-manager", "stockmaster", "sleeve", "gangs", "bladeburner", "stanek", "stats",
+    "analyze-hack", "hacknet-upgrade-manager", "go", "kill-all-scripts", "grep",
+  ];
+  for (const name of bbScripts) {
+    aliasMap["bb-" + name] = bb + "/" + name + ".js";
+  }
+  // Friendly aliases (non-conflicting with Kaze commands).
+  const bbFriendly = {
+    autopilot: "autopilot", daemon: "daemon", casino: "casino", reserve: "reserve",
+    facman: "faction-manager", work: "work-for-factions", crime: "crime", ascend: "ascend",
+    hashes: "spend-hacknet-hashes", farmint: "farm-intelligence", cleanup: "cleanup",
+    do: "run-command", sscan: "scan", hostman: "host-manager", stockmaster: "stockmaster",
+    bsleeve: "sleeve",     bgangs: "gangs", bladeburner: "bladeburner", stanek: "stanek",
+    bstats: "stats", bgo: "go", killallscripts: "kill-all-scripts", bgrep: "grep",
+  };
+  for (const [alias, script] of Object.entries(bbFriendly)) {
+    if (!(alias in aliasMap)) aliasMap[alias] = bb + "/" + script + ".js";
+  }
+  // bb-prefixed aliases for Task scripts (internal helpers, still runnable).
+  const bbTasks = [
+    "backdoor-all-servers", "contractor", "crack-host", "program-manager", "ram-manager",
+    "run-with-delay", "tor-manager", "write-file",
+  ];
+  for (const name of bbTasks) {
+    aliasMap["bb-task-" + name] = bb + "/Tasks/" + name + ".js";
+  }
+
   let aliased = 0;
   for (const [name, file] of Object.entries(aliasMap)) {
     const cmd = "run " + destRoot + "/" + file;
@@ -103,4 +137,5 @@ export async function main(ns) {
   }
   ns.tprint("Created " + aliased + "/" + Object.keys(aliasMap).length + " aliases.");
   ns.tprint("Kaze setup complete. Run 'boot'.");
+  ns.tprint("Integrated Bitburner scripts available under 'bb-*' aliases (e.g. 'bb-daemon', 'bb-autopilot', 'sscan').");
 }
