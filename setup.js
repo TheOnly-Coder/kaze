@@ -59,7 +59,8 @@ export async function main(ns) {
     weaken: "weaken.js", hacknet: "hacknet.js", servers: "servers.js", stock: "stock.js",
     sleeve: "sleeves.js", sleeves: "sleeves.js", gang: "gangs.js", gangs: "gangs.js",
     blade: "blade.js", corp: "corp.js", contracts: "contracts.js", auto: "auto.js",
-    autohack: "auto.js", money: "money.js", ram: "ram.js", ports: "ports.js", connect: "connect.js", expose: "expose.js", send: "send.js", help: "help.js",
+    autohack: "auto.js", money: "money.js", ram: "ram.js", ports: "ports.js",     connect: "connect.js", expose: "expose.js", send: "send.js", runon: "runon.js", help: "help.js",
+
     kazehelp: "help.js", kazever: "version.js", update: "update.js", del: "del.js",
     search: "search.js", google: "search.js", lookup: "search.js",
     browse: "browse.js", fetch: "browse.js", read: "browse.js", page: "browse.js",
