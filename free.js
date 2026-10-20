@@ -1,26 +1,41 @@
 export async function main(ns) {
-  const visited = new Set();
-  const stack = ["home"];
-  const servers = [];
-  while (stack.length) {
-    const h = stack.pop();
-    if (visited.has(h)) continue;
-    visited.add(h);
-    servers.push(h);
+  const args = ns.args.map((a) => String(a));
+  const target = args[0] ? args[0].trim() : "";
+
+  let servers = [];
+  if (target) {
+    if (!ns.serverExists(target)) {
+      ns.tprint("free: unknown server: " + target);
+      return;
+    }
+    if (!ns.hasRootAccess(target)) {
+      ns.tprint("free: no root access on " + target + ". Run: nuke " + target);
+      return;
+    }
+    servers = [target];
+  } else {
+    const visited = new Set();
+    const stack = ["home"];
+    while (stack.length) {
+      const h = stack.pop();
+      if (visited.has(h)) continue;
+      visited.add(h);
+      servers.push(h);
+      try {
+        for (const n of ns.scan(h)) {
+          if (!visited.has(n)) stack.push(n);
+        }
+      } catch (e) {}
+    }
     try {
-      for (const n of ns.scan(h)) {
-        if (!visited.has(n)) stack.push(n);
+      for (const s of ns.getPurchasedServers()) {
+        if (!visited.has(s)) {
+          visited.add(s);
+          servers.push(s);
+        }
       }
     } catch (e) {}
   }
-  try {
-    for (const s of ns.getPurchasedServers()) {
-      if (!visited.has(s)) {
-        visited.add(s);
-        servers.push(s);
-      }
-    }
-  } catch (e) {}
 
   let killed = 0;
   for (const host of servers) {
@@ -41,5 +56,5 @@ export async function main(ns) {
       } catch (e) {}
     }
   }
-  ns.tprint("free: killed " + killed + " script(s).");
+  ns.tprint("free: killed " + killed + " script(s)" + (target ? " on " + target : "") + ".");
 }

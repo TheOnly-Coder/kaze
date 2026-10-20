@@ -185,8 +185,7 @@ function printUsage(ns) {
     "rm <file>", "cp <src> <dst>", "mv <src> <dst>", "head <file>", "tail <file>", "wc <file>",
     "grep <pattern> <file>", "find <name>", "ps", "top", "kill <pid|script>", "killall",
     "whoami", "hostname", "uname", "date", "clear", "curl/wget <url> [dest]",
-    "git clone <repo>", "apt install <repo>", "sudo apt install <repo>", "free", "mem",
-    "df", "du", "sort/uniq/cut/tr <file>", "exit"
+    "git clone <repo>", "apt install <repo>", "sudo apt install <repo>", "free [server]", "mem",    "df", "du", "sort/uniq/cut/tr <file>", "exit"
   ];
   for (const c of cmds) ns.tprint("  " + c);
 }
